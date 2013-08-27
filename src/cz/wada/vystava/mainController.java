@@ -21,7 +21,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.media.VideoTrack;
+
 
 /**
  *
@@ -39,6 +41,10 @@ public class mainController implements Initializable {
 
     @FXML
     private Label label;
+
+    @FXML
+    private MediaView mediaView;
+
     private MediaPlayer player;
     private VideoTrack track;
 
@@ -61,10 +67,34 @@ public class mainController implements Initializable {
                     System.out.println(f.toURI());
                     Media media = new Media(f.toURI().toString());
 
-                    MediaPlayer player = new MediaPlayer(media);
+                    final MediaPlayer player = new MediaPlayer(media);
                     player.play();
 
+                    mediaView.setMediaPlayer(player);
+                    player.setOnError(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            String message = player.errorProperty().get().getMessage();
+                            System.out.println(message);
+                        }
+                    });
+
+                    player.setOnReady(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            System.out.println("PLAYER READY");
+                            player.volumeProperty().set(0);
+                            player.play();
+                        }
+                    });
+
+
+
+
                 } else if(t.getCode().equals(KeyCode.UP)){
+                    //sel.getSelectedIndex();
 
                 } else if(t.getCode().equals(KeyCode.DOWN)){
 
@@ -80,7 +110,9 @@ public class mainController implements Initializable {
 
         ObservableList<String> result = javafx.collections.FXCollections.observableArrayList();
         String[] files = root.list(new VideoFiles());
-        result.addAll(files);
+        if(files != null) {
+            result.addAll(files);
+        }
 
         return result;
 
