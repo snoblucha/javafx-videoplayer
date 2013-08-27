@@ -5,11 +5,14 @@
  */
 package cz.wada.vystava;
 
+import java.net.URL;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -19,11 +22,26 @@ public class Vystava extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
+        URL location = getClass().getResource("main.fxml");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(location);
+        fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
+
+        Parent root = (Parent) fxmlLoader.load(location.openStream());
 
         Scene scene = new Scene(root);
+        MainController controller = fxmlLoader.getController();
+
+        stage.initStyle(StageStyle.UNDECORATED);
 
         stage.setScene(scene);
+        stage.setResizable(false);
+
+        stage.setWidth(1024);
+        stage.setHeight(768);
+
+        stage.setFullScreen(true);
+        controller.setStage(stage);
         stage.show();
     }
 

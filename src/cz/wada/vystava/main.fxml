@@ -7,11 +7,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.media.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml" fx:controller="cz.wada.vystava.mainController">
+<AnchorPane id="AnchorPane" prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml" fx:controller="cz.wada.vystava.MainController">
   <children>
     <Button fx:id="button" layoutX="481.0" layoutY="14.0" onAction="#handleButtonAction" text="Click Me!" />
-    <Label fx:id="label" layoutX="126.0" layoutY="120.0" minHeight="16.0" minWidth="69.0" />
     <ListView fx:id="viewFiles" prefHeight="535.0" prefWidth="211.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="768.0" AnchorPane.topAnchor="14.0" />
-    <MediaView fx:id="mediaView" x="545" y="14" fitWidth="320" fitHeight="240" preserveRatio="true" />
+    <MediaView fx:id="mediaView" />
   </children>
 </AnchorPane>
