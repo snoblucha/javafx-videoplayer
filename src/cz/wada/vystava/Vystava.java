@@ -9,8 +9,10 @@ import java.net.URL;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -40,8 +42,20 @@ public class Vystava extends Application {
         stage.setWidth(1024);
         stage.setHeight(768);
 
-        stage.setFullScreen(true);
+        stage.setX(0);
+        stage.setY(0);
+
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
         controller.setStage(stage);
+
+        stage.setWidth(screenBounds.getWidth());
+        stage.setHeight(screenBounds.getHeight());
+
+        stage.setFullScreen(true);
+
+
+
         stage.show();
     }
 

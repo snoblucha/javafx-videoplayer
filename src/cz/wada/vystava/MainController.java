@@ -14,17 +14,16 @@ import javafx.beans.property.DoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.scene.media.VideoTrack;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -36,26 +35,27 @@ public class MainController implements Initializable {
 
     private class VideoFiles implements FilenameFilter {
 
+        @Override
         public boolean accept(File dir, String name) {
 
             return name.matches(".*\\.(avi|mpg|mp4|vob|mov)");
         }
     }
-
     private Stage stage;
+    private MediaPlayer player;
+
 
     @FXML
     private MediaView mediaView;
-
-    private MediaPlayer player;
-    private VideoTrack track;
 
     @FXML
     ListView viewFiles;
 
     @FXML
-    private void handleButtonAction(ActionEvent event) {
+    AnchorPane mediaPane;
 
+    @FXML
+    private void handleButtonAction(ActionEvent event) {
     }
 
     public void setStage(Stage stage) {
@@ -66,18 +66,12 @@ public class MainController implements Initializable {
 
         width.bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
         height.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
-        mediaView.setVisible(false);
+        mediaPane.setVisible(false);
+
         mediaView.setPreserveRatio(true);
 
-        stage.getScene().setOnKeyReleased(new EventHandler<KeyEvent>() {
 
-            @Override
-            public void handle(KeyEvent t) {
-                if (t.getCode().equals(KeyCode.ESCAPE)) {
-                    t.consume();
-                }
-            }
-        });
+
     }
 
     private ObservableList<String> getVideoList(File root) {
@@ -101,12 +95,17 @@ public class MainController implements Initializable {
 
     private void setListViewKeyboardHandle() {
         viewFiles.setOnKeyReleased(new EventHandler<KeyEvent>() {
-
             @Override
             public void handle(KeyEvent t) {
                 SelectionModel sel = viewFiles.getSelectionModel();
 
                 if (t.getCode().equals(KeyCode.ENTER)) {
+
+                    //if playing then can not assing another movie
+                    if( player != null && player.getStatus().equals(MediaPlayer.Status.PLAYING)){
+                        return;
+                    }
+
                     String selected = (String) sel.getSelectedItem();
                     File f = new File("video/" + selected);
                     System.out.println(f.toURI());
@@ -115,7 +114,6 @@ public class MainController implements Initializable {
 
                     mediaView.setMediaPlayer(player);
                     player.setOnError(new Runnable() {
-
                         @Override
                         public void run() {
                             String message = player.errorProperty().get().getMessage();
@@ -124,38 +122,45 @@ public class MainController implements Initializable {
                     });
 
                     player.setOnReady(new Runnable() {
-
                         @Override
                         public void run() {
                             player.volumeProperty().set(0);
-                            mediaView.toFront();
-                            mediaView.setVisible(true);
-                            //stage.getScene().setFill(Color.BLACK);
+                            mediaPane.toFront();
+
+                            double height = mediaView.getBoundsInLocal().getHeight();
+
+                            mediaView.setY((mediaView.getFitHeight() - height)/2);
+                            mediaPane.setVisible(true);
+                            mediaView.getScene().setFill(Color.BLACK);
+
 
                             player.play();
 
                         }
                     });
 
-                    player.setOnStopped(new Runnable() {
-
+                    Runnable onFinished = new Runnable() {
                         @Override
                         public void run() {
-                            mediaView.setVisible(false);
-                            mediaView.toBack();
+                            mediaPane.setVisible(false);
+                            mediaPane.toBack();
                         }
-                    });
+                    };
+
+                    player.setOnStopped(onFinished);
+                    player.setOnEndOfMedia(onFinished);
 
                 } else if (t.getCode().equals(KeyCode.UP)) {
                     //sel.getSelectedIndex();
-
                 } else if (t.getCode().equals(KeyCode.DOWN)) {
-
                 } else if (t.getCode().equals(KeyCode.ESCAPE)) {
+                    if( player!= null && player.getStatus().equals(MediaPlayer.Status.PLAYING)){
+                        player.stop();
+                    }
 
+                    t.consume();
                 }
             }
         });
     }
-
 }

@@ -7,12 +7,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.media.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="498.0" prefWidth="320.0" xmlns:fx="http://javafx.com/fxml" fx:controller="cz.wada.vystava.mainController">
+<AnchorPane id="AnchorPane" prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml" fx:controller="cz.wada.vystava.MainController">
   <children>
-    <Button fx:id="button" layoutX="237.0" layoutY="14.0" onAction="#handleButtonAction" text="Click Me!" />
-    <Label fx:id="label" layoutX="126.0" layoutY="120.0" minHeight="16.0" minWidth="69.0" />
-    <ListView fx:id="viewFiles" prefHeight="470.0" prefWidth="221.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="14.0" />
-
-    <MediaView fx:id="mediaView" />
+    <ListView fx:id="viewFiles" prefHeight="740.0" prefWidth="485.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="487.0" AnchorPane.topAnchor="8.0" />
+    <StackPane id="MediaPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <MediaView fx:id="mediaView" StackPane.alignment="CENTER" />
+      </children>
+    </StackPane>
   </children>
 </AnchorPane>
