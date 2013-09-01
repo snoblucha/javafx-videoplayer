@@ -84,6 +84,7 @@ public class VideoView extends VBox {
 
         Insets padding = new Insets(PADDING);
         setPadding(padding);
+        
 
         setPrefWidth(200);
         setPrefHeight(200);

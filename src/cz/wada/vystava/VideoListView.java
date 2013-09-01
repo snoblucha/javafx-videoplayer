@@ -16,13 +16,13 @@ import javafx.scene.control.SelectionModel;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
 
 /**
  *
  * @author snb
  */
-public class VideoListView extends HBox {
+public class VideoListView extends TilePane {
 
     private ObservableList<File> items = javafx.collections.FXCollections.observableArrayList();
     private ObservableList<VideoView> views = javafx.collections.FXCollections.observableArrayList();
@@ -35,7 +35,7 @@ public class VideoListView extends HBox {
     }
 
     public VideoListView(File directory) {
-        super(10.0);
+
         this.selectionModel = new SingleSelectionModel<VideoView>() {
 
             @Override
@@ -54,6 +54,8 @@ public class VideoListView extends HBox {
 
         Insets padding = new Insets(PADDING);
         setPadding(padding);
+        setHgap(PADDING);
+        setVgap(PADDING);
         setFocusTraversable(true);
         getStyleClass().add("VideoListView");
     }
@@ -86,11 +88,13 @@ public class VideoListView extends HBox {
     private void loadVideoList(File root) {
 
         File[] files = root.listFiles(new VideoFiles());
+        VideoView.setMargin(this, new Insets(10));
         if (files != null) {
             items.addAll(files);
 
             for (File file : files) {
                 VideoView view = new VideoView(file);
+
                 views.add(view);
             }
             getChildren().addAll(views);

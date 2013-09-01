@@ -3,6 +3,7 @@
     -fx-background-image: url('../img/background_zet.jpg');
     -fx-background-position: center center;
     -fx-background-size: cover;
+
 }
 
 #MainPane {
@@ -20,13 +21,17 @@
         linear-gradient(#8a8a8a 0%, #6b6a6b 20%, #343534 80%, #262626 100%),
         linear-gradient(#777777 0%, #606060 50%, #505250 51%, #2a2b2a 100%);
     -fx-background-insets: 0,1,4,5,6;
-    -fx-background-radius: 9,8,5,4,3;
+
+
+
     -fx-padding: 15 30 15 30;
     -fx-font-family: "Helvetica";
     -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
     -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
+
+
 }
 
 .VideoViewTitle {
@@ -46,7 +51,7 @@
         linear-gradient(#b9b9b9 0%, #c2c2c2 20%, #afafaf 80%, #c8c8c8 100%),
         linear-gradient(#f5f5f5 0%, #dbdbdb 50%, #cacaca 51%, #d7d7d7 100%);
     -fx-background-insets: 0,1,4,5;
-    -fx-background-radius: 9,8,5,4;
+    
     -fx-padding: 15 30 15 30;
     -fx-font-family: "Helvetica";
     -fx-font-size: 18px;

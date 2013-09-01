@@ -133,6 +133,8 @@ public class MainController implements Initializable {
                 } else if (t.getCode().equals(KeyCode.UP)) {
                     //sel.getSelectedIndex();
                 } else if (t.getCode().equals(KeyCode.DOWN)) {
+                } else if (t.getCode().equals(KeyCode.F) && t.isControlDown()) {
+                    videoList.setDirectory(new File("./video"));
                 } else if (t.getCode().equals(KeyCode.R) && t.isControlDown()) {
                     System.out.println("Reloading styles");
                     StyleManager.getInstance().reloadStylesheets(stage.getScene());
