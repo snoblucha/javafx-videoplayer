@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
-<?import java.util.*?>
 <?import java.net.*?>
+<?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.media.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml" fx:controller="cz.wada.vystava.MainController" >
+<AnchorPane id="MainPane" fx:id="rootPane" prefHeight="768.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml" fx:controller="cz.wada.vystava.MainController">
   <children>
     <AnchorPane id="MediaPane" fx:id="mediaPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-        <MediaView fx:id="mediaView" layoutX="0.0" layoutY="0.0" />
+        <MediaView fx:id="mediaView" />
       </children>
     </AnchorPane>
-    <ListView fx:id="viewFiles" prefHeight="740.0" prefWidth="485.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="487.0" AnchorPane.topAnchor="8.0" />
   </children>
-    <stylesheets>
+  <stylesheets>
     <URL value="@main.css" />
   </stylesheets>
 </AnchorPane>

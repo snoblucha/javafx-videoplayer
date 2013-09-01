@@ -5,6 +5,7 @@
  */
 package cz.wada.vystava;
 
+import java.io.File;
 import java.net.URL;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -32,15 +33,13 @@ public class Vystava extends Application {
         Parent root = (Parent) fxmlLoader.load(location.openStream());
 
         Scene scene = new Scene(root);
+
         MainController controller = fxmlLoader.getController();
 
         stage.initStyle(StageStyle.UNDECORATED);
 
         stage.setScene(scene);
         stage.setResizable(false);
-
-        stage.setWidth(1024);
-        stage.setHeight(768);
 
         stage.setX(0);
         stage.setY(0);
@@ -49,12 +48,11 @@ public class Vystava extends Application {
 
         controller.setStage(stage);
 
+        File styleFile = new File("css/style.css");
+        scene.getStylesheets().add(styleFile.toURI().toString());
+
         stage.setWidth(screenBounds.getWidth());
         stage.setHeight(screenBounds.getHeight());
-
-        stage.setFullScreen(true);
-
-
 
         stage.show();
     }

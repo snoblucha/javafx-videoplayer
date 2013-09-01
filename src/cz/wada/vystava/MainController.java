@@ -5,18 +5,16 @@
  */
 package cz.wada.vystava;
 
+import com.sun.javafx.css.StyleManager;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -33,30 +31,20 @@ import javafx.stage.Stage;
  */
 public class MainController implements Initializable {
 
-    private class VideoFiles implements FilenameFilter {
-
-        @Override
-        public boolean accept(File dir, String name) {
-
-            return name.matches(".*\\.(avi|mpg|mp4|vob|mov)");
-        }
-    }
     private Stage stage;
     private MediaPlayer player;
-
 
     @FXML
     private MediaView mediaView;
 
+    VideoListView videoList;
+
     @FXML
-    ListView viewFiles;
+    AnchorPane rootPane;
 
     @FXML
     AnchorPane mediaPane;
 
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-    }
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -69,46 +57,39 @@ public class MainController implements Initializable {
         mediaPane.setVisible(false);
 
         mediaView.setPreserveRatio(true);
-
-
-
-    }
-
-    private ObservableList<String> getVideoList(File root) {
-
-        ObservableList<String> result = javafx.collections.FXCollections.observableArrayList();
-        String[] files = root.list(new VideoFiles());
-        if (files != null) {
-            result.addAll(files);
-        }
-
-        return result;
-
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        viewFiles.setItems(getVideoList(new File("./video")));
+        videoList = new VideoListView(new File("./video"));
+        rootPane.getChildren().add(videoList);
         setListViewKeyboardHandle();
-        viewFiles.requestFocus();
+        videoList.requestFocus();
+        videoList.setPrefHeight(rootPane.getHeight());
+        videoList.setPrefWidth(rootPane.getWidth());
+
+        videoList.prefWidthProperty().bind(rootPane.widthProperty());
+        videoList.prefHeightProperty().bind(rootPane.heightProperty());
+
+
     }
 
     private void setListViewKeyboardHandle() {
-        viewFiles.setOnKeyReleased(new EventHandler<KeyEvent>() {
+        videoList.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent t) {
-                SelectionModel sel = viewFiles.getSelectionModel();
+                SelectionModel sel = videoList.getSelectionModel();
 
                 if (t.getCode().equals(KeyCode.ENTER)) {
 
                     //if playing then can not assing another movie
-                    if( player != null && player.getStatus().equals(MediaPlayer.Status.PLAYING)){
+                    if (player != null && player.getStatus().equals(MediaPlayer.Status.PLAYING)) {
                         return;
                     }
 
-                    String selected = (String) sel.getSelectedItem();
-                    File f = new File("video/" + selected);
-                    System.out.println(f.toURI());
+                    VideoView selected = (VideoView) sel.getSelectedItem();
+                    File f = selected.getFile();
+
                     Media media = new Media(f.toURI().toString());
                     player = new MediaPlayer(media);
 
@@ -129,10 +110,9 @@ public class MainController implements Initializable {
 
                             double height = mediaView.getBoundsInLocal().getHeight();
 
-                            mediaView.setY((mediaView.getFitHeight() - height)/2);
+                            mediaView.setY((mediaView.getFitHeight() - height) / 2);
                             mediaPane.setVisible(true);
                             mediaView.getScene().setFill(Color.BLACK);
-
 
                             player.play();
 
@@ -153,8 +133,11 @@ public class MainController implements Initializable {
                 } else if (t.getCode().equals(KeyCode.UP)) {
                     //sel.getSelectedIndex();
                 } else if (t.getCode().equals(KeyCode.DOWN)) {
+                } else if (t.getCode().equals(KeyCode.R) && t.isControlDown()) {
+                    System.out.println("Reloading styles");
+                    StyleManager.getInstance().reloadStylesheets(stage.getScene());
                 } else if (t.getCode().equals(KeyCode.ESCAPE)) {
-                    if( player!= null && player.getStatus().equals(MediaPlayer.Status.PLAYING)){
+                    if (player != null && player.getStatus().equals(MediaPlayer.Status.PLAYING)) {
                         player.stop();
                     }
 
