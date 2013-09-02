@@ -36,9 +36,10 @@ public class VideoView extends VBox {
     private final ObjectProperty<ImageView> image = new SimpleObjectProperty<>();
     private final ObjectProperty<File> file = new SimpleObjectProperty<>();
     private final ObjectProperty<Label> title = new SimpleObjectProperty<>();
+    private final ObjectProperty<Label> duration = new SimpleObjectProperty<>();
 
-    final int WIDTH = 160;
-    final int HEIGHT = 120;
+    final int WIDTH = 200;
+    final int HEIGHT = 200;
     final double PADDING = 0;
 
     public File getFile() {
@@ -84,10 +85,9 @@ public class VideoView extends VBox {
 
         Insets padding = new Insets(PADDING);
         setPadding(padding);
-        
 
-        setPrefWidth(200);
-        setPrefHeight(200);
+        setPrefWidth(WIDTH);
+        setPrefHeight(HEIGHT);
 
         File imageFile = getImageFile();
         ImageView iv = new ImageView();
@@ -113,9 +113,13 @@ public class VideoView extends VBox {
         label.setWrapText(true);
         label.getStyleClass().add("VideoViewTitle");
         this.setTitle(label);
-        label.setText(file.get().getName().replaceAll("\\.(mp4|avi)$", ""));
+        label.setText(file.get().getName().replaceAll("\\.mp4$", ""));
 
-        this.getChildren().add(title.get());
+        Label durationLabel = new Label();
+        durationLabel.getStyleClass().add("VideoViewDuration");
+        this.duration.set(durationLabel);
+
+        this.getChildren().addAll(title.get(), durationLabel);
 
     }
 
@@ -182,6 +186,31 @@ public class VideoView extends VBox {
                 player.play();
             }
         });
+    }
+
+    private void setDuration() {
+
+
+
+        final Media media = new Media(file.get().toURI().toString());
+        MediaPlayer player = new MediaPlayer(media);
+        player.setOnReady(new Runnable() {
+            @Override
+            public void run() {
+                Duration mediaDuration;
+                mediaDuration = media.getDuration();
+                String res;
+
+                int hour = (int) Math.floor(mediaDuration.toHours());
+                int min = ((int) Math.floor(mediaDuration.toMinutes())) % 60;
+                int sec = ((int) Math.floor(mediaDuration.toSeconds())) % 60;
+                res = (hour > 0 ? String.valueOf(hour) + ":" : "") + String.format("%02d:%02d", min, sec);
+
+                duration.get().setText(res);
+            }
+        });
+
+
     }
 
 }

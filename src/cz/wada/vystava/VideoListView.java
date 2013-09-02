@@ -111,7 +111,7 @@ public class VideoListView extends TilePane {
         @Override
         public boolean accept(File dir, String name) {
 
-            return name.matches(".*\\.(mp4|avi)");
+            return name.matches(".*\\.mp4");
         }
     }
 
