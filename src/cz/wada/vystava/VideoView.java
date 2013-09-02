@@ -117,7 +117,8 @@ public class VideoView extends VBox {
 
         Label durationLabel = new Label();
         durationLabel.getStyleClass().add("VideoViewDuration");
-        this.duration.set(durationLabel);
+        duration.set(durationLabel);
+        setDuration();
 
         this.getChildren().addAll(title.get(), durationLabel);
 
