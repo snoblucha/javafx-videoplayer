@@ -96,6 +96,9 @@ public class VideoListView extends TilePane {
                 VideoView view = new VideoView(file);
 
                 views.add(view);
+                for(int i=0; i< 10; i++){
+                    views.add(view);
+                }
             }
             getChildren().addAll(views);
             selectionModel.select(0);
