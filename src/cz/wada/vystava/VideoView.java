@@ -128,7 +128,7 @@ public class VideoView extends VBox {
         iv.setFitHeight(HEIGHT);
         iv.setPreserveRatio(true);
 
-        iv.getStyleClass().add("VideoViewimage");
+        iv.getStyleClass().add("VideoViewImage");
 
         imageProperty().set(iv);
         getChildren().add(getImage());
@@ -252,6 +252,6 @@ public class VideoView extends VBox {
 
     }
 
-    
+
 
 }

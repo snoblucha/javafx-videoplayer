@@ -8,6 +8,7 @@ package cz.wada.vystava;
 import java.io.File;
 import java.io.FilenameFilter;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -27,12 +28,9 @@ public class VideoListView extends AnchorPane {
 
     private final ObservableList<File> items = javafx.collections.FXCollections.observableArrayList();
     private final ObservableList<VideoView> videos = javafx.collections.FXCollections.observableArrayList();
-
     private final ObjectProperty<VideoView> videoView = new SimpleObjectProperty<>();
     private final ObjectProperty<ListView> listView = new SimpleObjectProperty<>();
-
     private final AnchorPane videoViewPane = new AnchorPane();
-
     private final double PADDING = 10.0;
 
     public VideoListView(File directory) {
@@ -50,9 +48,10 @@ public class VideoListView extends AnchorPane {
     }
 
     private void initSelectionModeListener() {
-        listView.get().selectionModelProperty().addListener(new ChangeListener<Number>() {
+
+        listView.get().selectionModelProperty().addListener(new ChangeListener<VideoView>() {
             @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+            public void changed(ObservableValue<? extends VideoView> ov, VideoView oldValue, VideoView newValue) {
 
                 /*VideoView last = views.get(oldValue.intValue());
                  if (last != null) {
@@ -63,9 +62,10 @@ public class VideoListView extends AnchorPane {
                  if (newItem != null) {
                  newItem.getStyleClass().add(selectedClass);
                  }*/
-                videoView.set(videos.get(newValue.intValue()));
+                videoView.set(newValue);
                 videoViewPane.getChildren().clear();
                 videoViewPane.getChildren().add(videoView.get());
+
 
             }
         });
@@ -92,10 +92,11 @@ public class VideoListView extends AnchorPane {
         setTopAnchor(videoViewPane, PADDING);
         setRightAnchor(videoViewPane, PADDING);
         setBottomAnchor(videoViewPane, PADDING);
+        setBottomAnchor(videoViewPane, PADDING);
 
         getChildren().add(videoViewPane);
-
-        //list.setPrefWidth(getWidth() * 0.3);
+        SimpleDoubleProperty right = new SimpleDoubleProperty(0.45);
+        list.prefWidthProperty().bind(right.multiply(widthProperty()));
         //videoViewPane.setPrefWidth(getWidth() * 0.5);
         File[] files = root.listFiles(new VideoFiles());
 
@@ -104,10 +105,8 @@ public class VideoListView extends AnchorPane {
             list.setItems(items);
 
             for (File file : files) {
-
                 VideoView view = new VideoView(file);
                 videos.add(view);
-
             }
 
             videoView.set(videos.get(0));
@@ -128,7 +127,6 @@ public class VideoListView extends AnchorPane {
 
     private void setDefaultKeyboardEvents() {
         addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
-
             @Override
             public void handle(KeyEvent t) {
                 if (t.getCode().equals(KeyCode.DOWN) || t.getCode().equals(KeyCode.RIGHT)) {
@@ -140,6 +138,11 @@ public class VideoListView extends AnchorPane {
                     listView.get().getSelectionModel().selectPrevious();
                     t.consume();
                 }
+
+                VideoView selected = (VideoView) listView.get().getSelectionModel().getSelectedItem();
+                videoView.set(selected);
+                videoViewPane.getChildren().clear();
+                videoViewPane.getChildren().add(videoView.get());
 
             }
         });
@@ -157,5 +160,4 @@ public class VideoListView extends AnchorPane {
     public ObjectProperty videoViewProperty() {
         return videoView;
     }
-
 }
