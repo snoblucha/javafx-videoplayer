@@ -87,9 +87,6 @@
     -fx-text-fill: white;
 }
 
-.list-cell:empty {
-    visibility:hidden;
-}
 
 .list-view {
     -fx-background-color: rgba(64,64,64,0.5);
