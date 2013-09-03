@@ -5,8 +5,6 @@
  */
 package cz.wada.vystava;
 
-import javafx.beans.binding.StringBinding;
-import javafx.beans.binding.StringExpression;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;

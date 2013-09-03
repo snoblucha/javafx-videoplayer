@@ -11,7 +11,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -103,12 +102,15 @@ public class MainController implements Initializable {
                     player.setOnReady(new Runnable() {
                         @Override
                         public void run() {
-                            
+
                             mediaPane.toFront();
 
                             double height = mediaView.getBoundsInLocal().getHeight();
+                            double width = mediaView.getBoundsInLocal().getWidth();
 
                             mediaView.setY((mediaView.getFitHeight() - height) / 2);
+                            mediaView.setX((mediaView.getFitWidth()- width) / 2);
+
                             mediaPane.setVisible(true);
                             mediaView.getScene().setFill(Color.BLACK);
 
@@ -136,7 +138,7 @@ public class MainController implements Initializable {
                 } else if (t.getCode().equals(KeyCode.R) && t.isControlDown()) {
                     System.out.println("Reloading styles");
                     StyleManager.getInstance().reloadStylesheets(stage.getScene());
-                } else if (t.getCode().equals(KeyCode.ESCAPE)) {
+                } else if (t.getCode().equals(KeyCode.SEMICOLON)) {
                     if (player != null && player.getStatus().equals(MediaPlayer.Status.PLAYING)) {
                         player.stop();
                     }
