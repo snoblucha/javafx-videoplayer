@@ -109,10 +109,13 @@ public class VideoListView extends AnchorPane {
                 videos.add(view);
             }
 
-            videoView.set(videos.get(0));
-            videoViewPane.getChildren().add(videoView.get());
-            listView.get().getSelectionModel().select(0);
-            listView.get().setItems(videos);
+            if(files.length > 0){
+
+                videoView.set(videos.get(0));
+                videoViewPane.getChildren().add(videoView.get());
+                listView.get().getSelectionModel().select(0);
+                listView.get().setItems(videos);
+            }
         }
     }
 

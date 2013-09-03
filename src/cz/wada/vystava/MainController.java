@@ -103,7 +103,7 @@ public class MainController implements Initializable {
                     player.setOnReady(new Runnable() {
                         @Override
                         public void run() {
-                            player.volumeProperty().set(0);
+                            
                             mediaPane.toFront();
 
                             double height = mediaView.getBoundsInLocal().getHeight();
