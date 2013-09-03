@@ -45,7 +45,6 @@ public class MainController implements Initializable {
     @FXML
     AnchorPane mediaPane;
 
-
     public void setStage(Stage stage) {
         this.stage = stage;
 
@@ -71,14 +70,13 @@ public class MainController implements Initializable {
         videoList.prefWidthProperty().bind(rootPane.widthProperty());
         videoList.prefHeightProperty().bind(rootPane.heightProperty());
 
-
     }
 
     private void setListViewKeyboardHandle() {
         videoList.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent t) {
-                SelectionModel sel = videoList.getSelectionModel();
+                SelectionModel sel = videoList.getListView().get().getSelectionModel();
 
                 if (t.getCode().equals(KeyCode.ENTER)) {
 

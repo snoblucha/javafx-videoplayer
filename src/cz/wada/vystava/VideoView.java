@@ -12,18 +12,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import javax.imageio.ImageIO;
 
@@ -37,8 +43,34 @@ public class VideoView extends VBox {
     private final ObjectProperty<File> file = new SimpleObjectProperty<>();
     private final ObjectProperty<Label> title = new SimpleObjectProperty<>();
     private final ObjectProperty<Label> duration = new SimpleObjectProperty<>();
+    private final StringProperty text = new SimpleStringProperty();
 
-    final int WIDTH = 200;
+    public String getText() {
+        return text.get();
+    }
+
+    public void setText(String value) {
+        text.set(value);
+    }
+
+    public StringProperty textProperty() {
+        return text;
+    }
+    private final StringProperty durationText = new SimpleStringProperty();
+
+    public String getDurationText() {
+        return durationText.get();
+    }
+
+    public void setDurationText(String value) {
+        durationText.set(value);
+    }
+
+    public StringProperty durationTextProperty() {
+        return durationText;
+    }
+
+    final int WIDTH = 320;
     final int HEIGHT = 200;
     final double PADDING = 0;
 
@@ -71,7 +103,7 @@ public class VideoView extends VBox {
         title.set(value);
     }
 
-    public ObjectProperty stringProperty() {
+    public ObjectProperty titleProperty() {
         return title;
     }
 
@@ -102,18 +134,19 @@ public class VideoView extends VBox {
         getChildren().add(getImage());
 
         if (!imageFile.exists()) {
-            this.generateImage(this.getFile(), imageFile, 30);
+            generateImage(this.getFile(), imageFile, 30);
         } else {
             Image imageToShow = new Image(imageFile.toURI().toString());
             iv.setImage(imageToShow);
-
         }
 
-        Label label = new Label();
-        label.setWrapText(true);
-        label.getStyleClass().add("VideoViewTitle");
-        this.setTitle(label);
-        label.setText(file.get().getName().replaceAll("\\.mp4$", ""));
+        Label textLabel = new Label();
+        textLabel.setWrapText(true);
+        textLabel.getStyleClass().add("VideoViewTitle");
+        setTitle(textLabel);
+
+        title.get().textProperty().bind(text);
+        text.set(file.get().getName().replaceAll("\\.mp4$", ""));
 
         Label durationLabel = new Label();
         durationLabel.getStyleClass().add("VideoViewDuration");
@@ -121,7 +154,6 @@ public class VideoView extends VBox {
         setDuration();
 
         this.getChildren().addAll(title.get(), durationLabel);
-
     }
 
     private File getImageFile() {
@@ -191,27 +223,35 @@ public class VideoView extends VBox {
 
     private void setDuration() {
 
+        Thread thread = new Thread(new Runnable() {
 
-
-        final Media media = new Media(file.get().toURI().toString());
-        MediaPlayer player = new MediaPlayer(media);
-        player.setOnReady(new Runnable() {
             @Override
             public void run() {
-                Duration mediaDuration;
-                mediaDuration = media.getDuration();
-                String res;
+                final Media media = new Media(file.get().toURI().toString());
+                MediaPlayer player = new MediaPlayer(media);
+                player.setOnReady(new Runnable() {
+                    @Override
+                    public void run() {
+                        Duration mediaDuration;
+                        mediaDuration = media.getDuration();
+                        String res;
 
-                int hour = (int) Math.floor(mediaDuration.toHours());
-                int min = ((int) Math.floor(mediaDuration.toMinutes())) % 60;
-                int sec = ((int) Math.floor(mediaDuration.toSeconds())) % 60;
-                res = (hour > 0 ? String.valueOf(hour) + ":" : "") + String.format("%02d:%02d", min, sec);
+                        int hour = (int) Math.floor(mediaDuration.toHours());
+                        int min = ((int) Math.floor(mediaDuration.toMinutes())) % 60;
+                        int sec = ((int) Math.floor(mediaDuration.toSeconds())) % 60;
+                        res = (hour > 0 ? String.valueOf(hour) + ":" : "") + String.format("%02d:%02d", min, sec);
 
-                duration.get().setText(res);
+                        duration.get().textProperty().bind(durationText);
+                        durationText.set(res);
+                    }
+                });
             }
         });
 
+        thread.start();
 
     }
+
+    
 
 }

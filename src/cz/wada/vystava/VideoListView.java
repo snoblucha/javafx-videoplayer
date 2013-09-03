@@ -7,74 +7,65 @@ package cz.wada.vystava;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.SelectionModel;
-import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.AnchorPane;
 
 /**
  *
  * @author snb
  */
-public class VideoListView extends TilePane {
+public class VideoListView extends AnchorPane {
 
-    private ObservableList<File> items = javafx.collections.FXCollections.observableArrayList();
-    private ObservableList<VideoView> views = javafx.collections.FXCollections.observableArrayList();
+    private final ObservableList<File> items = javafx.collections.FXCollections.observableArrayList();
+    private final ObservableList<VideoView> videos = javafx.collections.FXCollections.observableArrayList();
+
+    private final ObjectProperty<VideoView> videoView = new SimpleObjectProperty<>();
+    private final ObjectProperty<ListView> listView = new SimpleObjectProperty<>();
+
+    private final AnchorPane videoViewPane = new AnchorPane();
+
     private final double PADDING = 10.0;
-
-    private final SelectionModel<VideoView> selectionModel;
-
-    public SelectionModel<VideoView> getSelectionModel() {
-        return selectionModel;
-    }
 
     public VideoListView(File directory) {
 
-        this.selectionModel = new SingleSelectionModel<VideoView>() {
-
-            @Override
-            protected VideoView getModelItem(int i) {
-                return views.get(i);
-            }
-
-            @Override
-            protected int getItemCount() {
-                return views.size();
-            }
-        };
         setDirectory(directory);
         initSelectionModeListener();
         setDefaultKeyboardEvents();
 
         Insets padding = new Insets(PADDING);
         setPadding(padding);
-        setHgap(PADDING);
-        setVgap(PADDING);
+
         setFocusTraversable(true);
         getStyleClass().add("VideoListView");
+
     }
 
     private void initSelectionModeListener() {
-        selectionModel.selectedIndexProperty().addListener(new ChangeListener<Number>() {
+        listView.get().selectionModelProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                String selectedClass = "selected";
 
-                VideoView last = views.get(oldValue.intValue());
-                if (last != null) {
-                    last.getStyleClass().remove(selectedClass);
-                }
+                /*VideoView last = views.get(oldValue.intValue());
+                 if (last != null) {
+                 last.getStyleClass().remove(selectedClass);
+                 }
 
-                VideoView newItem = views.get(newValue.intValue());
-                if (newItem != null) {
-                    newItem.getStyleClass().add(selectedClass);
-                }
+                 VideoView newItem = views.get(newValue.intValue());
+                 if (newItem != null) {
+                 newItem.getStyleClass().add(selectedClass);
+                 }*/
+                videoView.set(videos.get(newValue.intValue()));
+                videoViewPane.getChildren().clear();
+                videoViewPane.getChildren().add(videoView.get());
 
             }
         });
@@ -87,25 +78,42 @@ public class VideoListView extends TilePane {
 
     private void loadVideoList(File root) {
 
+        //add List for
+        ListView list = new ListView();
+        list.getStyleClass().add("VideoListListView");
+        list.setCellFactory(new VideoViewCellFactory());
+        listView.set(list);
+        getChildren().add(list);
+
+        setTopAnchor(list, PADDING);
+        setBottomAnchor(list, PADDING);
+        setLeftAnchor(list, PADDING);
+
+        setTopAnchor(videoViewPane, PADDING);
+        setRightAnchor(videoViewPane, PADDING);
+        setBottomAnchor(videoViewPane, PADDING);
+
+        getChildren().add(videoViewPane);
+
+        //list.setPrefWidth(getWidth() * 0.3);
+        //videoViewPane.setPrefWidth(getWidth() * 0.5);
         File[] files = root.listFiles(new VideoFiles());
-        VideoView.setMargin(this, new Insets(10));
+
         if (files != null) {
             items.addAll(files);
+            list.setItems(items);
 
             for (File file : files) {
+
                 VideoView view = new VideoView(file);
+                videos.add(view);
 
-                views.add(view);
-                for(int i=0; i< 10; i++){
-                    views.add(view);
-                }
-            }
-            getChildren().addAll(views);
-            selectionModel.select(0);
-            if (selectionModel.getSelectedItem() != null) {
-                selectionModel.getSelectedItem().getStyleClass().add("selected");
             }
 
+            videoView.set(videos.get(0));
+            videoViewPane.getChildren().add(videoView.get());
+            listView.get().getSelectionModel().select(0);
+            listView.get().setItems(videos);
         }
     }
 
@@ -124,14 +132,30 @@ public class VideoListView extends TilePane {
             @Override
             public void handle(KeyEvent t) {
                 if (t.getCode().equals(KeyCode.DOWN) || t.getCode().equals(KeyCode.RIGHT)) {
-                    getSelectionModel().selectNext();
+                    listView.get().getSelectionModel().selectNext();
+                    t.consume();
+
                 }
                 if (t.getCode().equals(KeyCode.UP) || t.getCode().equals(KeyCode.LEFT)) {
-                   getSelectionModel().selectPrevious();
+                    listView.get().getSelectionModel().selectPrevious();
+                    t.consume();
                 }
+
             }
         });
 
+    }
+
+    public ObjectProperty<ListView> getListView() {
+        return listView;
+    }
+
+    public VideoView getVideoView() {
+        return videoView.get();
+    }
+
+    public ObjectProperty videoViewProperty() {
+        return videoView;
     }
 
 }
