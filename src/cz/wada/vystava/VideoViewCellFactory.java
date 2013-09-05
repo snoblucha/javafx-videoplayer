@@ -16,22 +16,24 @@ import javafx.util.Callback;
  */
 class VideoViewCellFactory implements Callback<ListView<File>, ListCell<File>> {
 
-
     @Override
     public ListCell<File> call(ListView<File> p) {
         ListCell<File> view;
         view = new ListCell<File>() {
             @Override
-            protected void updateItem(File t, boolean bln) {
-                super.updateItem(t, bln);
+            protected void updateItem(File t, boolean empty) {
+                super.updateItem(t, empty);
                 if (t != null) {
-                    String text = t.getName().replaceAll("\\.mp4", "");
-                    setText(text);
+                    if (empty) {
+                        
+                    } else {
+                        String text = t.getName().replaceAll("\\.mp4", "");
+                        setText(text);
+                    }
                 }
             }
         };
 
         return view;
     }
-
 }

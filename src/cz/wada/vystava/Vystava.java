@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
@@ -44,6 +45,8 @@ public class Vystava extends Application {
         stage.setX(0);
         stage.setY(0);
 
+
+
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
         controller.setStage(stage);
@@ -51,9 +54,12 @@ public class Vystava extends Application {
         File styleFile = new File("css/style.css");
         scene.getStylesheets().add(styleFile.toURI().toString());
 
+        scene.setCursor(Cursor.NONE);
+
         stage.setWidth(screenBounds.getWidth());
         stage.setHeight(screenBounds.getHeight());
-       // stage.setFullScreen(true);
+        stage.setFullScreen(true);
+
         stage.show();
     }
 

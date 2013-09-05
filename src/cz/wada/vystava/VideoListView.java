@@ -55,7 +55,7 @@ public class VideoListView extends AnchorPane {
 
         //add List for
         ListView list = new ListView();
-        //list.setFocusTraversable(false);
+
         list.setEditable(false);
 
         list.getStyleClass().add("VideoListListView");
@@ -83,11 +83,6 @@ public class VideoListView extends AnchorPane {
         if (files != null) {
             items.addAll(files);
             list.setItems(items);
-
-            for (File file : files) {
-
-                //videos.add(view);
-            }
 
             if(files.length > 0){
 
@@ -117,8 +112,8 @@ public class VideoListView extends AnchorPane {
                 if (t.getCode().equals(KeyCode.DOWN) || t.getCode().equals(KeyCode.UP)) {
 
                     File selected = (File) listView.get().getSelectionModel().getSelectedItem();
-                    VideoView view = new VideoView(selected);
-                    videoView.set(view);
+
+                    videoView.get().setFile(selected);
                     videoViewPane.getChildren().clear();
                     videoViewPane.getChildren().add(videoView.get());
                 }

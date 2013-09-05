@@ -84,11 +84,11 @@ public class MainController implements Initializable {
                         return;
                     }
 
-                    VideoView selected = (VideoView) sel.getSelectedItem();
-                    File f = selected.getFile();
+                    File f = (File) sel.getSelectedItem();
 
                     Media media = new Media(f.toURI().toString());
                     player = new MediaPlayer(media);
+                    
 
                     mediaView.setMediaPlayer(player);
                     player.setOnError(new Runnable() {
@@ -122,6 +122,9 @@ public class MainController implements Initializable {
                     Runnable onFinished = new Runnable() {
                         @Override
                         public void run() {
+                            if(player.getStatus().equals(MediaPlayer.Status.PLAYING)) {
+                                player.stop();
+                            }
                             mediaPane.setVisible(false);
                             mediaPane.toBack();
                         }
