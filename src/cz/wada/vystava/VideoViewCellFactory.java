@@ -5,6 +5,7 @@
  */
 package cz.wada.vystava;
 
+import java.io.File;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.binding.StringExpression;
 import javafx.scene.control.ListCell;
@@ -15,18 +16,19 @@ import javafx.util.Callback;
  *
  * @author snb
  */
-class VideoViewCellFactory implements Callback<ListView<VideoView>, ListCell<VideoView>> {
+class VideoViewCellFactory implements Callback<ListView<File>, ListCell<File>> {
 
 
     @Override
-    public ListCell<VideoView> call(ListView<VideoView> p) {
-        ListCell<VideoView> view;
-        view = new ListCell<VideoView>() {
+    public ListCell<File> call(ListView<File> p) {
+        ListCell<File> view;
+        view = new ListCell<File>() {
             @Override
-            protected void updateItem(VideoView t, boolean bln) {
+            protected void updateItem(File t, boolean bln) {
                 super.updateItem(t, bln);
                 if (t != null) {
-                    setText(t.getText());
+                    String text = t.getName().replaceAll("\\.mp4", "");
+                    setText(text);
                 }
             }
         };

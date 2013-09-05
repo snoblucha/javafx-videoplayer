@@ -27,7 +27,6 @@ import javafx.scene.layout.AnchorPane;
 public class VideoListView extends AnchorPane {
 
     private final ObservableList<File> items = javafx.collections.FXCollections.observableArrayList();
-    private final ObservableList<VideoView> videos = javafx.collections.FXCollections.observableArrayList();
     private final ObjectProperty<VideoView> videoView = new SimpleObjectProperty<>();
     private final ObjectProperty<ListView> listView = new SimpleObjectProperty<>();
     private final AnchorPane videoViewPane = new AnchorPane();
@@ -105,16 +104,17 @@ public class VideoListView extends AnchorPane {
             list.setItems(items);
 
             for (File file : files) {
-                VideoView view = new VideoView(file);
-                videos.add(view);
+
+                //videos.add(view);
             }
 
             if(files.length > 0){
 
-                videoView.set(videos.get(0));
+                VideoView view = new VideoView(items.get(0));
+                videoView.set(view);
                 videoViewPane.getChildren().add(videoView.get());
                 listView.get().getSelectionModel().select(0);
-                listView.get().setItems(videos);
+                listView.get().setItems(items);
             }
         }
     }
@@ -129,24 +129,18 @@ public class VideoListView extends AnchorPane {
     }
 
     private void setDefaultKeyboardEvents() {
-        addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+
+        getListView().get().addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent t) {
-                if (t.getCode().equals(KeyCode.DOWN) || t.getCode().equals(KeyCode.RIGHT)) {
-                    listView.get().getSelectionModel().selectNext();
-                    t.consume();
+                if (t.getCode().equals(KeyCode.DOWN) || t.getCode().equals(KeyCode.UP)) {
 
+                    File selected = (File) listView.get().getSelectionModel().getSelectedItem();
+                    VideoView view = new VideoView(selected);
+                    videoView.set(view);
+                    videoViewPane.getChildren().clear();
+                    videoViewPane.getChildren().add(videoView.get());
                 }
-                if (t.getCode().equals(KeyCode.UP) || t.getCode().equals(KeyCode.LEFT)) {
-                    listView.get().getSelectionModel().selectPrevious();
-                    t.consume();
-                }
-
-                VideoView selected = (VideoView) listView.get().getSelectionModel().getSelectedItem();
-                videoView.set(selected);
-                videoViewPane.getChildren().clear();
-                videoViewPane.getChildren().add(videoView.get());
-
             }
         });
 
