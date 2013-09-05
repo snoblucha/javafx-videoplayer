@@ -10,8 +10,6 @@ import java.io.FilenameFilter;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -35,7 +33,7 @@ public class VideoListView extends AnchorPane {
     public VideoListView(File directory) {
 
         setDirectory(directory);
-        initSelectionModeListener();
+
         setDefaultKeyboardEvents();
 
         Insets padding = new Insets(PADDING);
@@ -46,29 +44,7 @@ public class VideoListView extends AnchorPane {
 
     }
 
-    private void initSelectionModeListener() {
 
-        listView.get().selectionModelProperty().addListener(new ChangeListener<VideoView>() {
-            @Override
-            public void changed(ObservableValue<? extends VideoView> ov, VideoView oldValue, VideoView newValue) {
-
-                /*VideoView last = views.get(oldValue.intValue());
-                 if (last != null) {
-                 last.getStyleClass().remove(selectedClass);
-                 }
-
-                 VideoView newItem = views.get(newValue.intValue());
-                 if (newItem != null) {
-                 newItem.getStyleClass().add(selectedClass);
-                 }*/
-                videoView.set(newValue);
-                videoViewPane.getChildren().clear();
-                videoViewPane.getChildren().add(videoView.get());
-
-
-            }
-        });
-    }
 
     public final void setDirectory(File directory) {
         getChildren().clear();
@@ -79,6 +55,9 @@ public class VideoListView extends AnchorPane {
 
         //add List for
         ListView list = new ListView();
+        list.setFocusTraversable(false);
+        list.setEditable(false);
+
         list.getStyleClass().add("VideoListListView");
         list.setCellFactory(new VideoViewCellFactory());
         listView.set(list);
@@ -94,6 +73,7 @@ public class VideoListView extends AnchorPane {
         setBottomAnchor(videoViewPane, PADDING);
 
         getChildren().add(videoViewPane);
+        videoViewPane.setId("VideoViewPane");
         SimpleDoubleProperty right = new SimpleDoubleProperty(0.45);
         list.prefWidthProperty().bind(right.multiply(widthProperty()));
         //videoViewPane.setPrefWidth(getWidth() * 0.5);

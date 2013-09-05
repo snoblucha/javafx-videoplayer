@@ -13,12 +13,12 @@
 
 
 .VideoView {
+    -fx-background-color: transparent;
 
-    -fx-background-color: rgba(60,60,60,0.6);
     -fx-padding: 10;
     -fx-font-family: "Helvetica";
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+
     -fx-text-fill: white;
     -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
 
@@ -27,6 +27,7 @@
 
 .VideoViewTitle, .VideoViewDuration {
     -fx-effect: dropshadow( one-pass-box , black , 0, 0.0 , 0 , -1 );
+    -fx-padding: 10 0 10 0;    
 }
 
 .VideoListView {
@@ -36,7 +37,7 @@
 
 
 .VideoView.selected {
-    -fx-background-color: rgba(150,150,150,0.6);
+
 
     -fx-padding: 10;
     -fx-font-family: "Helvetica";
@@ -77,6 +78,8 @@
 .list-cell {
     -fx-background-color: rgba(75,75,75,0.6);
     -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-family: "Helvetica";
 }
 .list-cell:even { /* <=== changed to even */
     -fx-background-color: rgba(50,50,50,0.6);
@@ -90,4 +93,9 @@
 
 .list-view {
     -fx-background-color: rgba(64,64,64,0.5);
+}
+
+#VideoViewPane {
+    -fx-background-color: rgba(64,64,64,0.5);
+
 }
