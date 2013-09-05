@@ -69,7 +69,6 @@ public class VideoView extends VBox {
     public StringProperty durationTextProperty() {
         return durationText;
     }
-
     final int WIDTH = 320;
     final int HEIGHT = 200;
     final double PADDING = 0;
@@ -133,12 +132,7 @@ public class VideoView extends VBox {
         imageProperty().set(iv);
         getChildren().add(getImage());
 
-        if (!imageFile.exists()) {
-            generateImage(this.getFile(), imageFile, 30);
-        } else {
-            Image imageToShow = new Image(imageFile.toURI().toString());
-            iv.setImage(imageToShow);
-        }
+
 
         Label textLabel = new Label();
         textLabel.setWrapText(true);
@@ -151,9 +145,19 @@ public class VideoView extends VBox {
         Label durationLabel = new Label();
         durationLabel.getStyleClass().add("VideoViewDuration");
         duration.set(durationLabel);
-        setDuration();
 
         this.getChildren().addAll(title.get(), durationLabel);
+
+        if (!imageFile.exists()) {
+            generateImage(this.getFile(), imageFile, 30);
+        } else {
+            Image imageToShow = new Image(imageFile.toURI().toString());
+            iv.setImage(imageToShow);
+            setDurationFromMedia();
+        }
+
+
+
     }
 
     private File getImageFile() {
@@ -183,7 +187,6 @@ public class VideoView extends VBox {
         mView.setPreserveRatio(true);
 
         player.setOnPaused(new Runnable() {
-
             @Override
             public void run() {
                 int width = (int) mView.getBoundsInLocal().getWidth();
@@ -221,10 +224,9 @@ public class VideoView extends VBox {
         });
     }
 
-    private void setDuration() {
+    private void setDurationFromMedia() {
 
         Thread thread = new Thread(new Runnable() {
-
             @Override
             public void run() {
                 final Media media = new Media(file.get().toURI().toString());
@@ -232,17 +234,7 @@ public class VideoView extends VBox {
                 player.setOnReady(new Runnable() {
                     @Override
                     public void run() {
-                        Duration mediaDuration;
-                        mediaDuration = media.getDuration();
-                        String res;
-
-                        int hour = (int) Math.floor(mediaDuration.toHours());
-                        int min = ((int) Math.floor(mediaDuration.toMinutes())) % 60;
-                        int sec = ((int) Math.floor(mediaDuration.toSeconds())) % 60;
-                        res = (hour > 0 ? String.valueOf(hour) + ":" : "") + String.format("%02d:%02d", min, sec);
-
-                        duration.get().textProperty().bind(durationText);
-                        durationText.set(res);
+                        setDuration(media.getDuration());
                     }
                 });
             }
@@ -252,6 +244,15 @@ public class VideoView extends VBox {
 
     }
 
+    private void setDuration(Duration mediaDuration) {
+        String res;
 
+        int hour = (int) Math.floor(mediaDuration.toHours());
+        int min = ((int) Math.floor(mediaDuration.toMinutes())) % 60;
+        int sec = ((int) Math.floor(mediaDuration.toSeconds())) % 60;
+        res = (hour > 0 ? String.valueOf(hour) + ":" : "") + String.format("%02d:%02d", min, sec);
 
+        duration.get().textProperty().bind(durationText);
+        durationText.set(res);
+    }
 }

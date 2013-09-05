@@ -53,7 +53,7 @@ public class Vystava extends Application {
 
         stage.setWidth(screenBounds.getWidth());
         stage.setHeight(screenBounds.getHeight());
-        stage.setFullScreen(true);
+       // stage.setFullScreen(true);
         stage.show();
     }
 

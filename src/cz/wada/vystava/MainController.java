@@ -62,7 +62,7 @@ public class MainController implements Initializable {
         videoList = new VideoListView(new File("./video"));
         rootPane.getChildren().add(videoList);
         setListViewKeyboardHandle();
-        videoList.requestFocus();
+        videoList.getListView().get().requestFocus();
         videoList.setPrefHeight(rootPane.getHeight());
         videoList.setPrefWidth(rootPane.getWidth());
 

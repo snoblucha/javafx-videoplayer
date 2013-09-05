@@ -39,7 +39,7 @@ public class VideoListView extends AnchorPane {
         Insets padding = new Insets(PADDING);
         setPadding(padding);
 
-        setFocusTraversable(true);
+        setFocusTraversable(false);
         getStyleClass().add("VideoListView");
 
     }
@@ -55,13 +55,14 @@ public class VideoListView extends AnchorPane {
 
         //add List for
         ListView list = new ListView();
-        list.setFocusTraversable(false);
+        //list.setFocusTraversable(false);
         list.setEditable(false);
 
         list.getStyleClass().add("VideoListListView");
         list.setCellFactory(new VideoViewCellFactory());
         listView.set(list);
         getChildren().add(list);
+
 
         setTopAnchor(list, PADDING);
         setBottomAnchor(list, PADDING);
