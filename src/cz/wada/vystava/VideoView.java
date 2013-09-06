@@ -8,12 +8,11 @@ package cz.wada.vystava;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.scene.SnapshotParameters;
@@ -39,6 +38,8 @@ public class VideoView extends VBox {
     private final ObjectProperty<File> file = new SimpleObjectProperty<>();
     private final ObjectProperty<Label> title = new SimpleObjectProperty<>();
     private final ObjectProperty<Label> duration = new SimpleObjectProperty<>();
+
+    private final static HashMap<File,Duration> durations = new HashMap<>();
 
     private MediaPlayer player;
 
@@ -164,6 +165,7 @@ public class VideoView extends VBox {
 
                 mView.snapshot(params, writebleImage);
                 BufferedImage bImage = SwingFXUtils.fromFXImage(writebleImage, null);
+
                 try {
                     ImageIO.write(bImage, "png", imageFile);
                 } catch (IOException e) {
@@ -192,15 +194,24 @@ public class VideoView extends VBox {
 
     private void setDurationFromMedia() {
 
+        Duration durationFromMap = durations.get(file.get());
+        if(durationFromMap != null){
+            setDuration(durationFromMap);
+            return;
+        }
+
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 final Media media = new Media(file.get().toURI().toString());
-                MediaPlayer player = new MediaPlayer(media);
+                final MediaPlayer player = new MediaPlayer(media);
+                player.setAutoPlay(false);
                 player.setOnReady(new Runnable() {
                     @Override
                     public void run() {
+                        durations.put(file.get(), media.getDuration());
                         setDuration(media.getDuration());
+                        player.stop();
 
                     }
                 });
