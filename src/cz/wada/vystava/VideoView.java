@@ -39,7 +39,7 @@ public class VideoView extends VBox {
     private final ObjectProperty<Label> title = new SimpleObjectProperty<>();
     private final ObjectProperty<Label> duration = new SimpleObjectProperty<>();
 
-    private final static HashMap<File,Duration> durations = new HashMap<>();
+    private final static HashMap<File, Duration> durations = new HashMap<>();
 
     private MediaPlayer player;
 
@@ -57,8 +57,6 @@ public class VideoView extends VBox {
         duration.get().setText("--:--");
         this.init();
     }
-
-
 
     public Label getTitle() {
         return title.get();
@@ -110,11 +108,12 @@ public class VideoView extends VBox {
 
         this.getChildren().addAll(title.get(), duration.get());
 
-
     }
 
     private void init() {
         File imageFile = getImageFile();
+        player = null;
+        System.gc();
         title.get().setText(file.get().getName().replaceAll("\\.mp4$", ""));
         if (!imageFile.exists()) {
             generateImage(this.getFile(), imageFile, 5);
@@ -172,7 +171,13 @@ public class VideoView extends VBox {
                     Logger.getLogger(VideoView.class.getName()).log(Level.WARNING, "Image can not be written: {0}", e.getMessage());
                 } finally {
                     player.stop();
+                    player = null;
+                    player.setOnReady(null);
+                    player.setOnPlaying(null);
+                    player.setOnPaused(null);
+                    mView.setMediaPlayer(null);
                 }
+
             }
         });
 
@@ -195,30 +200,24 @@ public class VideoView extends VBox {
     private void setDurationFromMedia() {
 
         Duration durationFromMap = durations.get(file.get());
-        if(durationFromMap != null){
+        if (durationFromMap != null) {
             setDuration(durationFromMap);
             return;
         }
 
-        Thread thread = new Thread(new Runnable() {
+        final Media media = new Media(file.get().toURI().toString());
+        player = new MediaPlayer(media);
+        player.setAutoPlay(false);
+        player.setOnReady(new Runnable() {
             @Override
             public void run() {
-                final Media media = new Media(file.get().toURI().toString());
-                final MediaPlayer player = new MediaPlayer(media);
-                player.setAutoPlay(false);
-                player.setOnReady(new Runnable() {
-                    @Override
-                    public void run() {
-                        durations.put(file.get(), media.getDuration());
-                        setDuration(media.getDuration());
-                        player.stop();
+                durations.put(file.get(), media.getDuration());
+                setDuration(media.getDuration());
+                player.stop();
+                player.setOnReady(null);
 
-                    }
-                });
             }
         });
-
-        thread.start();
 
     }
 

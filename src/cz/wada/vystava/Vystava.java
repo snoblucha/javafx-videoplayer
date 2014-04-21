@@ -14,6 +14,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -23,6 +24,13 @@ import javafx.stage.StageStyle;
  * @author snb
  */
 public class Vystava extends Application {
+    
+    public static KeyCode KEY_BACK = KeyCode.ESCAPE;
+    public static KeyCode KEY_CONFIRM = KeyCode.ENTER;
+    public static KeyCode KEY_NEXT = KeyCode.DOWN;
+    public static KeyCode KEY_PREV = KeyCode.UP;
+       
+    
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -58,7 +66,7 @@ public class Vystava extends Application {
 
         stage.setWidth(screenBounds.getWidth());
         stage.setHeight(screenBounds.getHeight());
-        stage.setFullScreen(true);
+      //  stage.setFullScreen(true);
 
         stage.show();
     }
